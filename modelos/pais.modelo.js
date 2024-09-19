@@ -28,98 +28,64 @@ Pais.listar = async (respuesta) => {
 	}
 };
 //método que agrega un registro
-Pais.agregar = (pais, resultado) => {
-	//obtener objeto de conexión a la base de datos
-	const basedatos = bd.obtenerBaseDatos();
-	//Ejecutar la consulta
-	basedatos
-		.collection('paises')
-		//***** Código Mongo *****
-		.insertOne(
-			{
-				id: pais.id,
-				nombre: pais.nombre,
-				continente: pais.continente,
-				tipoRegion: pais.tipoRegion,
-				codigoAlfa2: pais.codigoAlfa2,
-				codigoAlfa3: pais.codigoAlfa3,
-			},
-			//************************
-			function (err, res) {
-				if (err) {
-					resultado(err, null);
-					console.log('Error agregando país', err);
-				} else {
-					console.log('Se agregó el país: ', pais);
-					resultado(null, pais);
-				}
-			}
-		);
+Pais.agregar = async (pais, respuesta) => {
+	try {
+		//obtener objeto de conexión a la base de datos
+		const basedatos = bd.obtenerBaseDatos();
+		//Ejecutar la inserción de un documento país
+		await basedatos.collection('paises').insertOne({
+			id: pais.id,
+			nombre: pais.nombre,
+			tipoRegion: pais.tipoRegion,
+			continente: pais.continente,
+			codigoAlfa2: pais.codigoAlfa2,
+			codigoAlfa3: pais.codigoAlfa3,
+		});
+		return respuesta(null, pais);
+	} catch (error) {
+		return respuesta(error, null);
+	}
 };
 //método que modifica un registro
-Pais.modificar = (pais, resultado) => {
-	//obtener objeto de conexión a la base de datos
-	const basedatos = bd.obtenerBaseDatos();
-	//Ejecutar la consulta
-	basedatos
-		.collection('paises')
-		//***** Código Mongo *****
-		.updateOne(
-			{ id: pais.id },
-			{
-				$set: {
-					nombre: pais.nombre,
-					continente: pais.continente,
-					tipoRegion: pais.tipoRegion,
-					codigoAlfa2: pais.codigoAlfa2,
-					codigoAlfa3: pais.codigoAlfa3,
-				},
-			},
-			//************************
-			function (err, res) {
-				if (err) {
-					resultado(err, null);
-					console.log('Error modificando país', err);
+Pais.modificar = async (pais, respuesta) => {
+	try {
+		//obtener objeto de conexión a la base de datos
+		const basedatos = bd.obtenerBaseDatos();
+		//Ejecutar la consulta
+		await basedatos
+			.collection('paises')
+			//***** Código Mongo *****
+			.updateOne(
+				{ id: pais.id },
+				{
+					$set: {
+						nombre: pais.nombre,
+						continente: pais.continente,
+						tipoRegion: pais.tipoRegion,
+						codigoAlfa2: pais.codigoAlfa2,
+						codigoAlfa3: pais.codigoAlfa3,
+					},
 				}
-				//La consulta no afectó registros
-				if (res.modifiedCount == 0) {
-					//No se encontraron registros
-					resultado({ mensaje: 'No actualizado' }, null);
-					console.log('No se actualizó el país ', pais);
-					return;
-				}
-				console.log('Se modificó con éxito el país: ', pais);
-				resultado(null, pais);
-			}
-		);
+			);
+		//************************
+		respuesta(null, pais);
+	} catch (error) {
+		respuesta(error, null);
+	}
 };
 //método que elimina un registro
-Pais.eliminar = (idPais, resultado) => {
-	//obtener objeto de conexión a la base de datos
-	const basedatos = bd.obtenerBaseDatos();
-	//Ejecutar la consulta
-	basedatos
-		.collection('paises')
-		//***** Código Mongo *****
-		.deleteOne(
-			{ id: eval(idPais) },
-			//************************
-			function (err, res) {
-				if (err) {
-					resultado(err, null);
-					console.log('Error eliminando país', err);
-					return;
-				}
-				//La consulta no afectó registros
-				if (res.deletedCount == 0) {
-					//No se encontraron registros
-					resultado({ mensaje: 'No encontrado' }, null);
-					console.log('No se encontró el país con id=', idPais);
-					return;
-				}
-				console.log('Se eliminó con éxito el país con id=', idPais);
-				resultado(null, res);
-			}
-		);
+Pais.eliminar = async (idPais, resultado) => {
+	try {
+		//obtener objeto de conexión a la base de datos
+		const basedatos = bd.obtenerBaseDatos();
+		//Ejecutar la consulta
+		await basedatos
+			.collection('paises')
+			//***** Código Mongo *****
+			.deleteOne({ id: eval(idPais) });
+		resultado(null, true);
+	} catch (error) {
+		respuesta(error, false);
+	}
 };
 module.exports = Pais;

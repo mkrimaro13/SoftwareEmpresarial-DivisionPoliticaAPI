@@ -6,7 +6,7 @@ module.exports = (app) => {
 	//método de la API que agrega un país
 	app.post('/paises/agregar', controlPais.agregar);
 	//método de la API que modifica un país
-	app.post('/paises/modificar', controlPais.modificar);
+	app.put('/paises/modificar', controlPais.modificar);
 	//método de la API que elimina un país
 	app.delete('/paises/:id', controlPais.eliminar);
 };

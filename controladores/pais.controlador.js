@@ -35,16 +35,16 @@ exports.agregar = (req, res) => {
 //método web para modificar un país
 exports.modificar = (req, res) => {
 	//validar que la solicitud tenga datos
-	if (!req.body || !req.body.id) {
+	if (!req.body || !req.body.id || !req.body.nombre) {
 		return res.status(400).send({
-			mensaje: 'El contenido del mensaje debe incluir la información del país',
+			mensaje: 'La solicitud debe incluir la información del país a modificar',
 		});
 	}
 	pais.modificar(req.body, (err, datos) => {
 		//verificar si hubo error
 		if (err) {
 			return res.status(500).send({
-				mensaje: 'Error modificando el    país',
+				mensaje: 'Error modificando el país',
 			});
 		} else {
 			return res.send(datos);
@@ -59,10 +59,9 @@ exports.eliminar = (req, res) => {
 			return res.status(500).send({
 				mensaje: 'Error eliminando el país',
 			});
-		} else {
-			return res.send({
-				mensaje: `Se eliminó el país con id=${req.params.id}`,
-			});
 		}
+		return res.send({
+			mensaje: `Se eliminó el país con id=${req.params.id}`,
+		});
 	});
 };
