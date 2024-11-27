@@ -2,8 +2,8 @@ pipeline {
  agent any
  environment {
   REPO_URL =
-'https://github.com/frayosorio/apiDivisionPoliticaExpressJS.git'
-  BRANCH = 'main' // Cambia esto si usas otra rama
+'https://github.com/mkrimaro13/SoftwareEmpresarial-DivisionPoliticaAPI.git'
+  BRANCH = 'jenkins' // Cambia esto si usas otra rama
   DOCKER_IMAGE = 'apidivisionpolitica:latest'
  }
  stages {
