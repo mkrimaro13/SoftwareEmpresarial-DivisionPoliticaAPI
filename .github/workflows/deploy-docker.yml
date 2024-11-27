@@ -1,0 +1,29 @@
+name: Build and Deploy Docker Container
+
+on:
+ push:
+  branches:
+  - githubactions
+
+
+jobs:
+ build:
+  runs-on: self-hosted
+
+  steps:
+   - name: Checkout repository
+     uses: actions/checkout@v2
+   - name: Set up Node.js
+     uses: actions/setup-node@v2
+     with:
+      node-version: '20'
+   - name: Install dependencies
+     run: npm install
+   - name: Build Docker image
+     run: docker build -t apidivisionpolitica .
+   - name: Stop and remove old container
+     run: |
+      docker stop dockerapidivisionpolitica
+      docker rm dockerapidivisionpolitica
+   - name: Run new container
+     run: docker container run --network reddivisionpolitica --name dockerapidivisionpolitica -p 3000:3030 -d apidivisionpolitica
