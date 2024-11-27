@@ -5,12 +5,12 @@ pipeline {
 'https://github.com/mkrimaro13/SoftwareEmpresarial-DivisionPoliticaAPI.git'
   BRANCH = 'jenkins' // Cambia esto si usas otra rama
   DOCKER_IMAGE = 'apidivisionpolitica:latest'
+  DOCKER_CONTAINER = 'apidivisionpolitica'
  }
  stages {
   stage('Clonar Repositorio') {
    steps {
-    git branch: "${BRANCH}", credentialsId: '100', url:
-"${REPO_URL}"
+    git branch: "${BRANCH}", credentialsId: '100', url: "${REPO_URL}"
    }
   }
   stage('Construir Imagen Docker') {
@@ -24,20 +24,16 @@ pipeline {
    steps {
     script {
      bat '''
-docker ps -q --filter
-"name=dockerapidivisionpolitica" | findstr . && docker stop
-dockerapidivisionpolitica || echo No hay contenedor en ejecución
- docker ps -a -q --filter
-"name=dockerapidivisionpolitica" | findstr . && docker rm
-dockerapidivisionpolitica || echo No hay contenedor detenido
- '''
+        docker ps -q --filter "name=%DOCKER_CONTAINER%" | findstr . && docker stop %DOCKER_CONTAINER% || echo No hay contenedor en ejecución
+        docker ps -a -q --filter "name=%DOCKER_CONTAINER%" | findstr . && docker rm %DOCKER_CONTAINER% || echo No hay contenedor detenido
+        '''
     }
    }
   }
   stage('Desplegar Contenedor Docker') {
    steps {
     script {
-     bat 'docker container run --network reddivisionpolitica --name dockerapidivisionpolitica -p 8080:3030 -d %DOCKER_IMAGE%'
+     bat 'docker container run --network reddivisionpolitica --name %DOCKER_CONTAINER% -p 8085:3030 -d %DOCKER_IMAGE%'
     }
    }
   }
